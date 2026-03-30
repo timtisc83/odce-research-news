@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kann ein gemeinsames Mittagessen Zusammenarbeit anstoßen? — ODCE Forschungsnews</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --tuhh: #00C1D4;
+    --odce: #143AFF;
+    --tuhh-mid: #0099a8;
+    --tuhh-light: #e2f8fb;
+    --tuhh-pale: #f0fcfd;
+    --violet: #7200FE;
+    --dark: #111214;
+    --body-text: #2a2d30;
+    --muted: #5a6370;
+    --border: #d8dee6;
+    --bg: #ffffff;
+    --bg2: #f7f9fb;
+    --font: 'Poppins', sans-serif;
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { font-family: var(--font); color: var(--body-text); background: var(--bg); line-height: 1.75; }
+
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    position: sticky; top: 0; background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+  .site-header .logo-wrap { display: flex; align-items: center; gap: 14px; }
+  .site-header .odce-logo svg { height: 36px; width: auto; }
+  .site-header .divider { width: 1px; height: 28px; background: var(--border); }
+  .site-header .inst-label { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.4px; line-height: 1.3; }
+  .site-header .inst-label strong { display: block; color: var(--dark); font-size: 12px; }
+  .lang-switch { display: flex; gap: 6px; }
+  .lang-switch a { font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-decoration: none; border: 1px solid var(--border); color: var(--muted); transition: all .15s; }
+  .lang-switch a.active, .lang-switch a:hover { background: var(--tuhh); color: #fff; border-color: var(--tuhh); }
+
+  .hero {
+    background: var(--dark);
+    position: relative; overflow: hidden;
+    padding: 5rem 2rem 4rem;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #00C1D415 0%, #143AFF12 50%, transparent 100%);
+    pointer-events: none;
+  }
+  .hero-grid { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,193,212,0.15); border: 1px solid rgba(0,193,212,0.35);
+    color: var(--tuhh); font-size: 11px; font-weight: 500; letter-spacing: 0.6px;
+    text-transform: uppercase; padding: 5px 12px; border-radius: 20px;
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--tuhh); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 600; line-height: 1.2;
+    color: #ffffff; letter-spacing: -0.5px; margin-bottom: 1.25rem;
+  }
+  .hero h1 em { font-style: normal; color: var(--tuhh); }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 1.5rem; }
+  .hero-meta .date { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .hero-meta .authors { font-size: 13px; color: rgba(255,255,255,0.75); }
+  .hero-meta .tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+  .tag-keyword { background: rgba(114,0,254,0.2); color: #b085ff; border: 1px solid rgba(114,0,254,0.3); }
+  .hero-stat-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 2rem; }
+  .hero-stat {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; padding: 14px 20px; min-width: 130px;
+  }
+  .hero-stat .num { font-size: 1.75rem; font-weight: 600; color: var(--tuhh); line-height: 1; }
+  .hero-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+  .article-wrap { max-width: 860px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+  .lead {
+    font-size: 1.1rem; font-weight: 400; color: var(--body-text); line-height: 1.8;
+    border-left: 3px solid var(--tuhh); padding-left: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  .article-body p { margin-bottom: 1.35rem; font-size: 1rem; color: var(--body-text); }
+  .article-body h2 {
+    font-size: 1.25rem; font-weight: 600; color: var(--dark);
+    margin: 2.5rem 0 1rem; padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .article-body h2::before { content: '— '; color: var(--tuhh); }
+
+  .callout {
+    background: var(--tuhh-pale); border: 1px solid rgba(0,193,212,0.25);
+    border-left: 4px solid var(--tuhh);
+    border-radius: 0 10px 10px 0;
+    padding: 1.25rem 1.5rem; margin: 2rem 0;
+  }
+  .callout p { margin: 0; font-size: 0.95rem; color: var(--body-text); font-style: italic; }
+  .callout strong { color: var(--tuhh-mid); font-style: normal; }
+
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 2rem 0; }
+  .result-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem; position: relative; overflow: hidden;
+  }
+  .result-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--tuhh);
+  }
+  .result-card .multiplier { font-size: 1.8rem; font-weight: 600; color: var(--odce); line-height: 1; }
+  .result-card .metric { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; }
+  .result-card .detail { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+  .app-banner {
+    background: linear-gradient(135deg, var(--dark) 0%, #1a1f2e 100%);
+    border: 1px solid rgba(0,193,212,0.25);
+    border-radius: 14px; padding: 1.75rem 2rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+    flex-wrap: wrap; margin: 2.5rem 0;
+  }
+  .app-banner .left { flex: 1; min-width: 220px; }
+  .app-banner .left h3 { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .app-banner .left p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0; }
+  .app-banner .cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--tuhh); color: #fff;
+    font-size: 13px; font-weight: 600; padding: 10px 20px;
+    border-radius: 8px; text-decoration: none; white-space: nowrap;
+    transition: background .15s, transform .1s;
+    letter-spacing: 0.2px;
+  }
+  .app-banner .cta:hover { background: var(--tuhh-mid); transform: translateY(-1px); }
+  .app-banner .cta svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .figure-wrap { margin: 2rem 0; }
+  .figure-img {
+    width: 100%; aspect-ratio: 16/7; background: var(--bg2);
+    border: 1px solid var(--border); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px; color: var(--muted); font-size: 13px;
+    position: relative; overflow: hidden;
+  }
+  .figure-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(0,193,212,0.04) 20px, rgba(0,193,212,0.04) 21px);
+  }
+  .figure-img span { position: relative; z-index: 1; }
+  .figure-img .icon { font-size: 2rem; position: relative; z-index: 1; }
+  .figure-caption { font-size: 12px; color: var(--muted); margin-top: 8px; font-style: italic; }
+
+  .boundary-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 14px; }
+  .boundary-table th { background: var(--dark); color: #fff; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 500; letter-spacing: 0.3px; }
+  .boundary-table th:first-child { border-radius: 8px 0 0 0; }
+  .boundary-table th:last-child { border-radius: 0 8px 0 0; }
+  .boundary-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .boundary-table tr:last-child td { border-bottom: none; }
+  .boundary-table tr:nth-child(even) td { background: var(--bg2); }
+  .pill-result { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .pill-bridged { background: #e2f8fb; color: var(--tuhh-mid); }
+  .pill-partial { background: #fff3e8; color: #c06010; }
+  .pill-resistant { background: #f0f0f5; color: #666; }
+
+  .contact-section {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem;
+  }
+  .contact-section h3 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--tuhh); margin-bottom: 1.25rem; }
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+  .contact-card .name { font-size: 14px; font-weight: 600; color: var(--dark); }
+  .contact-card .role { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .contact-card .details { margin-top: 8px; font-size: 12px; color: var(--body-text); line-height: 1.8; }
+  .contact-card a { color: var(--tuhh-mid); text-decoration: none; }
+  .contact-card a:hover { text-decoration: underline; }
+
+  .site-footer {
+    border-top: 1px solid var(--border); padding: 1.5rem 2rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    background: var(--bg);
+  }
+  .site-footer .footer-left { font-size: 12px; color: var(--muted); }
+  .site-footer .footer-left strong { color: var(--tuhh-mid); }
+  .tuhh-wordmark { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.3px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 3rem 1.25rem 2.5rem; }
+    .article-wrap { padding: 2rem 1.25rem 3rem; }
+    .site-header { padding: 0 1.25rem; }
+    .app-banner { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo-wrap">
+    <div class="odce-logo">
+      <svg viewBox="-117.23172 149.41432 96.605103 82.199448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ODCE Logo">
+        <path style="fill:none;stroke:#143aff;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;" d="m -116.43796,230.55898 59.621691,0.26104 h 6.8089 l 27.00638,-23.65599 v -50.64865 l -38.93207,0.22247 -54.504901,21.22023 z"/>
+        <g aria-label="ODCE" style="font-weight:bold;font-size:19.7556px;font-family:'BC Novatica TEST','Poppins',sans-serif;fill:#143aff;">
+          <path d="m -102.06223,223.39662 c 4.504274,0 7.270058,-2.6275 7.270058,-7.32933 0,-4.70183 -2.765784,-7.32933 -7.270058,-7.32933 -4.52404,0 -7.28982,2.6275 -7.28982,7.32933 0,4.70183 2.76578,7.32933 7.28982,7.32933 z m 0,-3.14114 c -2.23239,0 -3.65479,-1.56069 -3.65479,-4.18819 0,-2.62749 1.4224,-4.18819 3.65479,-4.18819 2.212624,0 3.635027,1.5607 3.635027,4.18819 0,2.6275 -1.422403,4.18819 -3.635027,4.18819 z"/>
+          <path d="m -93.783207,223.12004 h 6.183503 c 3.753564,0 6.795927,-1.89654 6.795927,-7.05275 0,-5.15621 -3.042363,-7.05275 -6.795927,-7.05275 h -6.183503 z m 5.294501,-3.12138 h -1.857026 v -7.86273 h 1.857026 c 3.239919,0 4.049898,1.34338 4.049898,3.93136 0,2.58799 -0.809979,3.93137 -4.049898,3.93137 z"/>
+          <path d="m -73.05818,223.39662 c 3.101629,0 6.440326,-1.81752 6.637882,-5.84766 h -3.654786 c -0.217312,1.85703 -1.698982,2.70652 -2.983096,2.70652 -2.15336,0 -3.496741,-1.44216 -3.496741,-4.20794 0,-2.72628 1.343381,-4.16844 3.496741,-4.16844 1.284114,0 2.78554,0.82974 2.983096,2.70652 h 3.654786 c -0.197556,-4.0499 -3.536253,-5.84766 -6.637882,-5.84766 -4.286965,0 -7.131771,2.54848 -7.131771,7.30958 0,4.80061 2.844806,7.34908 7.131771,7.34908 z"/>
+          <path d="m -65.411352,223.12004 h 10.806313 v -3.12138 h -7.368838 v -2.37068 h 6.381058 v -3.12138 h -6.381058 v -2.37067 h 7.27006 v -3.12139 h -10.707535 z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="divider"></div>
+    <div class="inst-label">
+      <strong>Neues aus der Forschung</strong>
+      Research News · TUHH
+    </div>
+  </div>
+  <div class="lang-switch">
+    <a href="research-news-en.html">EN</a>
+    <a href="research-news-de.html" class="active">DE</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-tag">Neue Forschung · ODCE · Technische Universität Hamburg</div>
+    <h1>Kann ein gemeinsames Mittagessen <em>Zusammenarbeit anstoßen</em> — auch über Organisationsgrenzen hinweg?</h1>
+    <div class="hero-meta">
+      <span class="authors">Harold Gamero, Tim Schweisfurth, Harini Marudavanan</span>
+      <span class="date">Institut für Organisationsdesign und Collaborative Engineering (ODCE) · TUHH</span>
+    </div>
+    <div class="hero-meta" style="margin-top:0.75rem;">
+      <span class="tag tag-keyword">Serendipität</span>
+      <span class="tag tag-keyword">Offene Innovation</span>
+      <span class="tag tag-keyword">Engineered Encounters</span>
+      <span class="tag tag-keyword">Feldexperiment</span>
+    </div>
+    <div class="hero-stat-row">
+      <div class="hero-stat"><div class="num">876</div><div class="lbl">Dyadische Interaktionen</div></div>
+      <div class="hero-stat"><div class="num">4</div><div class="lbl">Experimentelle Durchläufe</div></div>
+      <div class="hero-stat"><div class="num">×22</div><div class="lbl">Wahrscheinlicher neue Verbindungen</div></div>
+      <div class="hero-stat"><div class="num">×5</div><div class="lbl">Mehr kreative Zusammenarbeit</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE -->
+<main class="article-wrap">
+
+  <p class="lead">
+    Forschende des Instituts für Organisationsdesign und Collaborative Engineering (ODCE) an der Technischen Universität Hamburg (TUHH) haben nachgewiesen: Ein einziges informelles Mittagessen zwischen Fremden aus verschiedenen Unternehmen kann die Wahrscheinlichkeit neuer Berufskontakte, kreativen Wissensaustauschs und nachhaltiger Zusammenarbeit drastisch steigern — sogar über Branchen-, Geschlechter- und geografische Grenzen hinweg.
+  </p>
+
+  <div class="article-body">
+
+    <h2>Die Forschungsfrage</h2>
+    <p>Innovation entsteht selten im Alleingang. Sie gedeiht, wenn Menschen mit unterschiedlichen Hintergründen und komplementärem Wissen zusammenkommen. In verteilten, organisationsübergreifenden Umgebungen bleibt dieses Zusammentreffen jedoch häufig dem Zufall überlassen. Harold Gamero, Prof. Dr. Tim Schweisfurth und Harini Marudavanan vom ODCE stellten die Frage: Lässt sich Serendipität gezielt herbeiführen? Und wirkt dies auch dort, wo organisationale Grenzen Kooperation typischerweise verhindern?</p>
+
+    <h2>Das Experiment</h2>
+    <p>Das Forschungsteam konzipierte und führte vier Runden Feldexperimente in einem Technologiepark in Hamburg durch, in dem rund 800 Mitarbeitende aus 120 kleinen und mittelständischen Unternehmen tätig sind. Teilnehmende wurden per Zufall Tischen bei kostenlosen „Lunch-Roulette"-Mittagessen zugeteilt — informellen Begegnungen, die gezielt Menschen aus verschiedenen Firmen zusammenbrachten, die sich sonst nicht getroffen hätten.</p>
+    <p>Daten wurden zu vier Zeitpunkten erhoben: eine Woche vor dem Mittagessen, zwei Tage danach, bis zu drei Monate später (als Teilnehmende einen Folgemahlzeiten-Gutschein mit einer beliebigen Teilnehmerin oder einem beliebigen Teilnehmer einlösen konnten) sowie acht Monate nach der Intervention in einer qualitativen Befragung. Insgesamt wurden 876 dyadische Interaktionen analysiert.</p>
+
+    <!-- Figure  -->
+    <div class="figure-wrap">
+      <div class="figure-img">
+        <img src="images/ResearchDesignDE.jpg" 
+             alt="Research model — Lunch-Roulette intervention and boundary-spanning outcomes"
+             style="max-width:100%; height:auto;">
+      </div>
+      <p class="figure-caption">
+        <span>Abbildung 1: Forschungsdesign mit Lunch-Roulette-Intervention und den fünf gemessenen Outcomes über individuelle und strukturelle Grenzen hinweg. Quelle: ODCE / TUHH.</p>
+       </div>
+
+    <h2>Die Ergebnisse</h2>
+    <p>Die Befunde sind bemerkenswert. Teilnehmende, die beim Lunch-Roulette am gleichen Tisch saßen, waren:</p>
+
+    <div class="results-grid">
+      <div class="result-card"><div class="multiplier">×22</div><div class="metric">wahrscheinlicher, eine neue Verbindung zu knüpfen</div><div class="detail">vs. getrennt Sitzende (B = 3,09, p &lt; ,001)</div></div>
+      <div class="result-card"><div class="multiplier">×3,7</div><div class="metric">stärkere bestehende Beziehungen</div><div class="detail">Stärkere Bindungsintensität (B = 1,30, p &lt; ,001)</div></div>
+      <div class="result-card"><div class="multiplier">×5,1</div><div class="metric">mehr kreative Zusammenarbeit</div><div class="detail">Absicht zum Wissensaustausch (IRR = 5,14, p &lt; ,001)</div></div>
+      <div class="result-card"><div class="multiplier">×5,8</div><div class="metric">eher bereit, in Kontakt zu bleiben</div><div class="detail">Beziehungskontinuität (B = 1,75, p &lt; ,001)</div></div>
+      <div class="result-card"><div class="multiplier">×5,2</div><div class="metric">häufiger tatsächlich weiter in Kontakt</div><div class="detail">Reales Folgetreffen (B = 1,65, p &lt; ,001)</div></div>
+    </div>
+
+    <p>Eine Metaanalyse über alle fünf Outcomes bestätigte einen starken, homogenen Interventionseffekt (I² = 0,0 %) — die Vorteile waren konsistent und nicht durch einen einzelnen Indikator getrieben.</p>
+
+    <div class="callout">
+      <p><strong>Zentraler Befund:</strong> „Teilnehmende, die am gleichen Tisch saßen, waren mehr als 21-mal so wahrscheinlich dabei, eine neue berufliche Verbindung zu knüpfen — und diese Effekte blieben auch über Branchen-, geografische und Geschlechtergrenzen hinweg stabil."</p>
+    </div>
+
+    <h2>Überwindung organisationaler Grenzen</h2>
+    <p>Die Studie untersuchte zudem, ob die Wirkung engineerter Begegnungen typischen Kooperationsbarrieren standhält. Die Ergebnisse zeigen ein differenziertes Bild:</p>
+
+    <table class="boundary-table">
+      <thead>
+        <tr>
+          <th>Grenztyp</th>
+          <th>Barrierewirkung?</th>
+          <th>Überbrückt durch Lunch-Roulette?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Geografische Distanz</td>
+          <td>Schwach negativ (p = ,034)</td>
+          <td><span class="pill-result pill-bridged">Vollständig neutralisiert</span></td>
+        </tr>
+        <tr>
+          <td>Branchenunterschiede</td>
+          <td>Stark negativ (p &lt; ,001)</td>
+          <td><span class="pill-result pill-bridged">Vollständig überbrückt</span></td>
+        </tr>
+        <tr>
+          <td>Netzwerk-Nicht-Redundanz</td>
+          <td>Stärkste Barriere (p &lt; ,001)</td>
+          <td><span class="pill-result pill-partial">Teilweise überbrückt</span></td>
+        </tr>
+        <tr>
+          <td>Geschlechterunterschiede</td>
+          <td>Moderat negativ (p = ,016)</td>
+          <td><span class="pill-result pill-bridged">Weitgehend überbrückt</span></td>
+        </tr>
+        <tr>
+          <td>Funktionale Unterschiede</td>
+          <td>Moderat negativ (p = ,039)</td>
+          <td><span class="pill-result pill-partial">Teilweise überbrückt</span></td>
+        </tr>
+        <tr>
+          <td>Hierarchische Distanz</td>
+          <td>Schwach / nicht signifikant</td>
+          <td><span class="pill-result pill-resistant">Kaum überbrückt</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Acht Monate später</h2>
+    <p>Eine qualitative Folgebefragung acht Monate nach der Intervention zeigte, dass einige Beziehungen fortbestanden — Teilnehmende hielten sporadisch Kontakt, entwickelten Vertrauen und planten in einzelnen Fällen konkrete Kooperationen. Andere nannten fehlende geschäftliche Synergien oder organisationalen Wandel als Hindernisse. Auffällig war, dass viele den sozialen und psychologischen Mehrwert hervorhoben: das Gefühl, wahrgenommen zu werden, Komfort und Zugehörigkeit — Hinweise darauf, dass engineerter Zufall nicht nur unmittelbare Kooperation fördert, sondern auch relationale Infrastruktur aufbaut.</p>
+
+    <h2>Bedeutung für die Praxis</h2>
+    <p>Die Studie zeigt, dass niedrigschwellige, kostengünstige Maßnahmen sinnvolle grenzüberschreitende Beziehungen erzeugen können — dort, wo traditionelle Strukturen versagen. Für Verantwortliche in wissensintensiven Umgebungen — Technologieparks, Innovationscluster, Hochschulcampus und hybride Organisationen — bietet das Lunch-Roulette ein praktisches, evidenzbasiertes Instrument zur Förderung organisationsübergreifender Zusammenarbeit ohne hohen Koordinationsaufwand.</p>
+
+    <!-- APP LINK BANNER -->
+    <div class="app-banner">
+      <div class="left">
+        <h3>Ergebnisse interaktiv erkunden</h3>
+        <p>Wählen Sie zwischen unabhängigen und abhängigen Variablen, blenden Sie Konfidenzintervalle ein und aus — in unserem interaktiven Ergebnis-Dashboard.</p>
+      </div>
+      <a href="odce-results-dashboard.html" class="cta" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+        Ergebnis-Dashboard öffnen
+      </a>
+    </div>
+
+    <h2>Über die Forschung</h2>
+    <p>Diese Studie wurde von Harold Gamero, Prof. Dr. Tim Schweisfurth und Harini Marudavanan am Institut für Organisationsdesign und Collaborative Engineering der Technischen Universität Hamburg (TUHH) durchgeführt. Sie basiert auf Feldexperimenten in einem deutschen Technologiepark mit 876 dyadischen Interaktionen über vier experimentelle Durchläufe. Die Inhalte dieser Meldung wurden mit der Institutsleitung abgestimmt.</p>
+
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-section">
+    <h3>Ansprechpersonen</h3>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="name">Harold Gamero</div>
+        <div class="role">Wissenschaftlicher Mitarbeiter, ODCE · TUHH</div>
+        <div class="details">
+          <a href="/cdn-cgi/l/email-protection#c2aaa3b0adaea6eca5a3afa7b0ad82b6b7aaaaeca6a7"><span class="__cf_email__" data-cfemail="d0b8b1a2bfbcb4feb7b1bdb5a2bf90a4a5b8b8feb4b5">[email&#160;protected]</span></a><br>
+          Institut für Organisationsdesign und Collaborative Engineering<br>
+          Technische Universität Hamburg (TUHH)<br>
+          Am Schwarzenberg-Campus 4, 21073 Hamburg<br>
+          <a href="https://www.tuhh.de" target="_blank">www.tuhh.de</a>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="name">Prof. Dr. Tim Schweisfurth</div>
+        <div class="role">Professor &amp; Institutsleiter, ODCE · TUHH</div>
+        <div class="details">
+          <a href="/cdn-cgi/l/email-protection#f4809d99da87979c83919d87928186809cb480819c9cda9091"><span class="__cf_email__" data-cfemail="f98d9094d78a9a918e9c908a9f8c8b8d91b98d8c9191d79d9c">[email&#160;protected]</span></a><br>
+          Institut für Organisationsdesign und Collaborative Engineering<br>
+          Technische Universität Hamburg (TUHH)<br>
+          Am Schwarzenberg-Campus 4, 21073 Hamburg
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="name">Harini Marudavanan</div>
+        <div class="role">Wissenschaftliche Mitarbeiterin, ODCE · TUHH</div>
+        <div class="details">
+          <a href="/cdn-cgi/l/email-protection#d3bbb2a1babdbafdbeb2a1a6b7b2a5b2bdb2bd93a7a6bbbbfdb7b6"><span class="__cf_email__" data-cfemail="d7bfb6a5beb9bef9bab6a5a2b3b6a1b6b9b6b997a3a2bfbff9b3b2">[email&#160;protected]</span></a><br>
+          Institut für Organisationsdesign und Collaborative Engineering<br>
+          Technische Universität Hamburg (TUHH)
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-foot
