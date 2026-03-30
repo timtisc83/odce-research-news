@@ -1,0 +1,388 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', sans-serif; }
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+  --tuhh: #00C1D4;
+  --odce: #143AFF;
+  --tuhh-light: #e0f8fb;
+  --odce-light: #e8ebff;
+  --tuhh-dark: #0099a8;
+  --text: var(--color-text-primary);
+  --text2: var(--color-text-secondary);
+  --bg: var(--color-background-primary);
+  --bg2: var(--color-background-secondary);
+  --bdr: var(--color-border-tertiary);
+}
+
+.dash { padding: 1rem 0; }
+.header { margin-bottom: 1.5rem; }
+.header h1 { font-size: 20px; font-weight: 600; color: var(--tuhh); letter-spacing: -0.3px; }
+.header p { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.header .authors { font-size: 12px; color: var(--text2); margin-top: 2px; font-style: italic; }
+
+.odce-bar { width: 32px; height: 3px; background: var(--tuhh); border-radius: 2px; margin-bottom: 10px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.5rem; }
+.ctrl-group { background: var(--bg); border: 0.5px solid var(--bdr); border-radius: var(--border-radius-lg); padding: 12px 14px; flex: 1; min-width: 180px; }
+.ctrl-group h3 { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.6px; color: var(--tuhh); margin-bottom: 10px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 400; cursor: pointer; border: 1px solid var(--bdr); background: var(--bg2); color: var(--text2); transition: all .15s; user-select: none; }
+.pill.active { background: var(--tuhh); border-color: var(--tuhh); color: #fff; font-weight: 500; }
+.pill.active.odce { background: var(--odce); border-color: var(--odce); }
+.pill:hover:not(.active) { border-color: var(--tuhh); color: var(--tuhh); }
+.toggle-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; color: var(--text2); }
+.toggle-row:first-child { margin-top: 0; }
+.sw { position: relative; width: 34px; height: 20px; display: inline-block; flex-shrink: 0; }
+.sw input { opacity: 0; width: 0; height: 0; position: absolute; }
+.slider { position: absolute; inset: 0; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 20px; transition: .2s; cursor: pointer; }
+.slider::before { content: ''; position: absolute; height: 14px; width: 14px; left: 2px; bottom: 2px; background: var(--text2); border-radius: 50%; transition: .2s; }
+.sw input:checked + .slider { background: var(--tuhh); border-color: var(--tuhh); }
+.sw input:checked + .slider::before { transform: translateX(14px); background: #fff; }
+
+.chart-area { background: var(--bg); border: 0.5px solid var(--bdr); border-radius: var(--border-radius-lg); padding: 16px; margin-bottom: 1rem; }
+.chart-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.chart-sub { font-size: 11px; color: var(--text2); margin-bottom: 14px; }
+
+.forest-plot { width: 100%; }
+.fp-row { display: flex; align-items: center; gap: 0; margin-bottom: 8px; cursor: pointer; border-radius: 6px; padding: 3px 0; transition: background .1s; }
+.fp-row:hover { background: var(--bg2); }
+.fp-label { width: 140px; flex-shrink: 0; font-size: 12px; color: var(--text); line-height: 1.3; padding-right: 8px; }
+.fp-label .sub { font-size: 10px; color: var(--text2); }
+.fp-canvas-wrap { flex: 1; height: 28px; position: relative; }
+.fp-stat { width: 90px; flex-shrink: 0; font-size: 11px; color: var(--text2); text-align: right; padding-left: 8px; }
+.fp-stat .b { color: var(--text); font-weight: 500; font-size: 12px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+.leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+.meta-box { background: var(--tuhh-light); border: 1px solid var(--tuhh); border-radius: var(--border-radius-md); padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--text); display: none; }
+.meta-box.show { display: block; }
+.meta-box strong { color: var(--tuhh-dark); }
+.meta-box .meta-stat { display: inline-block; margin-right: 14px; }
+
+.fp-section-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--tuhh); margin: 10px 0 4px; padding-left: 0; }
+
+.null-line-wrap { position: relative; }
+</style>
+
+<div class="dash">
+  <div class="header">
+    <div class="odce-bar"></div>
+    <h1>Engineered Encounters &amp; Collaboration</h1>
+    <p class="authors">Gamero, Schweisfurth &amp; Marudavanan · ODCE, Hamburg University of Technology</p>
+    <p>876 dyadic interactions · 4 experimental runs · Lunch-Roulette field experiment</p>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl-group">
+      <h3>Dependent Variable (DV)</h3>
+      <div class="pill-row" id="dv-pills">
+        <span class="pill active" data-dv="all">All outcomes</span>
+        <span class="pill" data-dv="tf">Tie formation</span>
+        <span class="pill" data-dv="ts">Tie strength</span>
+        <span class="pill" data-dv="cc">Creative collab.</span>
+        <span class="pill" data-dv="wm">Willingness maintain</span>
+        <span class="pill" data-dv="fc">Follow-up contact</span>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <h3>Independent Variable (IV)</h3>
+      <div class="pill-row" id="iv-pills">
+        <span class="pill active odce" data-iv="main">Main effect</span>
+        <span class="pill" data-iv="geo">Geographic dist.</span>
+        <span class="pill" data-iv="ind">Industry dist.</span>
+        <span class="pill" data-iv="net">Network non-redund.</span>
+        <span class="pill" data-iv="hier">Hierarchy</span>
+        <span class="pill" data-iv="func">Function</span>
+        <span class="pill" data-iv="sex">Gender</span>
+      </div>
+    </div>
+    <div class="ctrl-group" style="max-width:200px;flex:none;">
+      <h3>Display Options</h3>
+      <div class="toggle-row">
+        <label class="sw"><input type="checkbox" id="tog-ci" checked><span class="slider"></span></label>
+        Show 95% CIs
+      </div>
+      <div class="toggle-row">
+        <label class="sw"><input type="checkbox" id="tog-meta" checked><span class="slider"></span></label>
+        Meta-analytic pooled
+      </div>
+      <div class="toggle-row">
+        <label class="sw"><input type="checkbox" id="tog-int"><span class="slider"></span></label>
+        Show interaction only
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-area">
+    <div class="chart-title" id="chart-title">Main effects of intervention — all outcomes</div>
+    <div class="chart-sub" id="chart-sub">Coefficient B (log-odds / IRR), 95% CI. Seated together vs. apart.</div>
+    <div class="forest-plot" id="forest-plot"></div>
+    <div class="meta-box" id="meta-box"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DVS = {
+  tf: { label: 'Tie formation', sub: 'log-odds', color: '#00C1D4' },
+  ts: { label: 'Tie strength', sub: 'B', color: '#143AFF' },
+  cc: { label: 'Creative collab.', sub: 'IRR/B', color: '#7200FE' },
+  wm: { label: 'Willingness maintain', sub: 'B', color: '#FF7E15' },
+  fc: { label: 'Follow-up contact', sub: 'B', color: '#FF4F4F' }
+};
+
+const DATA = {
+  main: {
+    title: 'Main effect of intervention',
+    sub: 'Coefficient B, seated together vs. apart. All effects p < .001',
+    rows: [
+      { dv:'tf', B:3.09,  se:0.23,  p:'<.001', label:'Tie formation',         note:'×21.98 odds' },
+      { dv:'ts', B:1.302, se:0.123, p:'<.001', label:'Tie strength',          note:'×3.68' },
+      { dv:'cc', B:1.638, se:0.118, p:'<.001', label:'Creative collab.',       note:'IRR ×5.14' },
+      { dv:'wm', B:1.753, se:0.192, p:'<.001', label:'Willingness maintain',  note:'×5.77' },
+      { dv:'fc', B:1.652, se:0.369, p:'<.001', label:'Follow-up contact',     note:'×5.22' },
+    ],
+    meta: { B:-0.226, ciLo:-0.412, ciHi:-0.040, p:.017, Q:'Q(4)=1.44', I2:'0.0%', note:'Pooled meta-analysis (all 5 DVs). Negative B = favorable direction in pooled standardized scale.' }
+  },
+  geo: {
+    title: 'Geographic distance — barrier & interaction effects',
+    sub: 'Direct effect (control group) vs. interaction with intervention',
+    rows: [
+      { dv:'tf', B:-0.00018, se:0.000,  p:'.034', label:'Tie form. (direct)',   note:'barrier', type:'direct' },
+      { dv:'ts', B:-0.0415,  se:0.010,  p:'<.001',label:'Tie str. (direct)',    note:'barrier', type:'direct' },
+      { dv:'cc', B:-0.0372,  se:0.009,  p:'<.001',label:'Creative (direct)',    note:'barrier', type:'direct' },
+      { dv:'ts', B:0.0395,   se:0.016,  p:'.012', label:'Tie str. (interact.)', note:'bridging', type:'int' },
+      { dv:'cc', B:0.0513,   se:0.018,  p:'.005', label:'Creative (interact.)', note:'bridging', type:'int' },
+    ],
+    meta: { B:-0.0002, ciLo:null, ciHi:null, p:.001, Q:'Q(4)=0.89', I2:'0.0%', note:'Pooled: distance has small but reliable negative effect. Intervention neutralizes it (slope ≈ 0, z=1.13, p=.26 in seated group).' }
+  },
+  ind: {
+    title: 'Industry distance — barrier & bridging effects',
+    sub: 'Direct negative effects largely disappear in intervention group',
+    rows: [
+      { dv:'tf', B:-0.0236,  se:0.007,  p:'.001', label:'Tie form. (direct)',   note:'barrier', type:'direct' },
+      { dv:'ts', B:-3.094,   se:0.524,  p:'<.001',label:'Tie str. (direct)',    note:'barrier', type:'direct' },
+      { dv:'cc', B:-2.706,   se:0.522,  p:'<.001',label:'Creative (direct)',    note:'barrier', type:'direct' },
+      { dv:'wm', B:-0.0095,  se:0.005,  p:'.047', label:'Willingness (direct)', note:'barrier', type:'direct' },
+    ],
+    meta: { B:null, ciLo:null, ciHi:null, p:null, Q:null, I2:null, note:'In the intervention group, all direct effects become non-significant. Engineered encounters successfully bridge industry distance.' }
+  },
+  net: {
+    title: 'Network non-redundancy — strongest barrier',
+    sub: 'Large negative direct effects; partial bridging in intervention group',
+    rows: [
+      { dv:'tf', B:-0.1379,  se:0.061,  p:'.025', label:'Tie form. (direct)',   note:'barrier', type:'direct' },
+      { dv:'ts', B:-12.778,  se:2.801,  p:'<.001',label:'Tie str. (direct)',    note:'barrier', type:'direct' },
+      { dv:'cc', B:-14.894,  se:2.869,  p:'<.001',label:'Creative (direct)',    note:'barrier', type:'direct' },
+      { dv:'ts', B:42.001,   se:20.993, p:'.045', label:'Tie str. (interact.)', note:'bridging', type:'int' },
+    ],
+    meta: { B:null, ciLo:null, ciHi:null, p:null, Q:null, I2:null, note:'Network non-redundancy is the strongest barrier found. Engineered encounters still produce bridging effects, especially on tie strength (B=42.0, p=.045).' }
+  },
+  hier: {
+    title: 'Hierarchical distance — minor barrier',
+    sub: 'Most effects non-significant; one small interaction on willingness',
+    rows: [
+      { dv:'wm', B:-0.0574, se:0.025, p:'.022', label:'Willingness (interact.)', note:'partial', type:'int' },
+    ],
+    meta: { B:null, ciLo:null, ciHi:null, p:null, Q:null, I2:null, note:'Hierarchy is largely resistant to short randomized interactions. Engineered encounters provide minimal relief from hierarchical barriers.' }
+  },
+  func: {
+    title: 'Functional distance — partial barrier',
+    sub: 'Dampens initiation; intervention helps sustain but not initiate',
+    rows: [
+      { dv:'ts', B:-2.463, se:1.196, p:'.039', label:'Tie str. (direct)',    note:'barrier', type:'direct' },
+      { dv:'cc', B:-2.465, se:1.255, p:'.049', label:'Creative (direct)',    note:'barrier', type:'direct' },
+    ],
+    meta: { B:null, ciLo:null, ciHi:null, p:null, Q:null, I2:null, note:'Functional specialization inhibits collaboration. Engineered encounters provide only partial relief — helping sustain but not necessarily initiate cross-functional ties.' }
+  },
+  sex: {
+    title: 'Gender distance — partially bridged',
+    sub: 'Negative direct effects disappear in intervention group',
+    rows: [
+      { dv:'ts', B:-4.2591, se:1.773,  p:'.016', label:'Tie str. (direct)',    note:'barrier', type:'direct' },
+      { dv:'wm', B:-0.0357, se:0.019,  p:'.063', label:'Willingness (direct)', note:'barrier', type:'direct' },
+      { dv:'fc', B:-0.0288, se:0.017,  p:'.098', label:'Follow-up (direct)',   note:'barrier', type:'direct' },
+    ],
+    meta: { B:null, ciLo:null, ciHi:null, p:null, Q:null, I2:null, note:'Gender distances negatively influence multiple outcomes. In the intervention group, these negative effects are no longer present, indicating effective bridging.' }
+  }
+};
+
+let state = { iv: 'main', dv: 'all', showCI: true, showMeta: true, intOnly: false };
+let chartInstances = {};
+
+function getRows() {
+  let rows = DATA[state.iv].rows;
+  if (state.dv !== 'all') rows = rows.filter(r => r.dv === state.dv);
+  if (state.intOnly) rows = rows.filter(r => r.type === 'int');
+  return rows;
+}
+
+function getColor(dv, type) {
+  const base = DVS[dv]?.color || '#00C1D4';
+  if (type === 'direct') return '#FF4F4F';
+  if (type === 'int') return '#00C1D4';
+  return base;
+}
+
+function render() {
+  const data = DATA[state.iv];
+  document.getElementById('chart-title').textContent = data.title;
+  document.getElementById('chart-sub').textContent = data.sub;
+
+  const rows = getRows();
+  const fp = document.getElementById('forest-plot');
+  fp.innerHTML = '';
+
+  if (!rows.length) {
+    fp.innerHTML = '<p style="font-size:13px;color:var(--text2);padding:10px 0;">No results match current filters.</p>';
+    return;
+  }
+
+  // Compute scale
+  const allVals = rows.flatMap(r => {
+    const lo = r.B - 1.96 * r.se;
+    const hi = r.B + 1.96 * r.se;
+    return [r.B, lo, hi];
+  });
+  const dataMin = Math.min(...allVals);
+  const dataMax = Math.max(...allVals);
+  const pad = (dataMax - dataMin) * 0.15 || 0.5;
+  const scMin = dataMin - pad;
+  const scMax = dataMax + pad;
+  const range = scMax - scMin;
+
+  function xPct(v) { return ((v - scMin) / range * 100).toFixed(2) + '%'; }
+  const zeroPct = ((0 - scMin) / range * 100).toFixed(2) + '%';
+
+  // Section labels if mixed
+  const hasTypes = rows.some(r => r.type);
+  let lastType = null;
+
+  rows.forEach(r => {
+    if (hasTypes && r.type !== lastType) {
+      lastType = r.type;
+      const sl = document.createElement('div');
+      sl.className = 'fp-section-label';
+      sl.textContent = r.type === 'int' ? '↳ Interaction effects (seated together)' : '▸ Direct effects (control group)';
+      fp.appendChild(sl);
+    }
+
+    const row = document.createElement('div');
+    row.className = 'fp-row';
+
+    const lo = r.B - 1.96 * r.se;
+    const hi = r.B + 1.96 * r.se;
+    const color = getColor(r.dv, r.type);
+    const sig = r.p === '<.001' || parseFloat(r.p) < 0.05;
+
+    const lo_pct = xPct(lo);
+    const hi_pct = xPct(hi);
+    const b_pct = xPct(r.B);
+
+    row.innerHTML = `
+      <div class="fp-label">
+        <div>${r.label}</div>
+        <div class="sub">${r.note || DVS[r.dv]?.sub || ''}</div>
+      </div>
+      <div class="fp-canvas-wrap">
+        <svg width="100%" height="28" style="overflow:visible">
+          <line x1="${zeroPct}" y1="2" x2="${zeroPct}" y2="26"
+                stroke="var(--color-border-secondary)" stroke-width="1" stroke-dasharray="3 2"/>
+          ${state.showCI ? `
+          <line x1="${lo_pct}" y1="14" x2="${hi_pct}" y2="14"
+                stroke="${color}" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+          <line x1="${lo_pct}" y1="9" x2="${lo_pct}" y2="19"
+                stroke="${color}" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+          <line x1="${hi_pct}" y1="9" x2="${hi_pct}" y2="19"
+                stroke="${color}" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+          ` : ''}
+          <circle cx="${b_pct}" cy="14" r="${sig ? 5 : 4}"
+                  fill="${sig ? color : 'none'}" stroke="${color}"
+                  stroke-width="${sig ? 0 : 1.5}" opacity="${sig ? 1 : 0.6}"/>
+        </svg>
+      </div>
+      <div class="fp-stat">
+        <span class="b">B=${r.B > 0 ? '+' : ''}${r.B}</span><br>
+        p=${r.p}
+      </div>
+    `;
+    fp.appendChild(row);
+  });
+
+  // Zero label
+  const zero = document.createElement('div');
+  zero.style.cssText = 'display:flex;align-items:center;gap:0;padding-top:4px;';
+  zero.innerHTML = `<div style="width:140px;flex-shrink:0"></div><div style="flex:1;position:relative;height:16px;">
+    <span style="position:absolute;left:${zeroPct};transform:translateX(-50%);font-size:10px;color:var(--text2);">B=0 (null)</span>
+  </div><div style="width:90px"></div>`;
+  fp.appendChild(zero);
+
+  // Meta
+  const mb = document.getElementById('meta-box');
+  const meta = data.meta;
+  if (state.showMeta && meta && meta.note) {
+    mb.className = 'meta-box show';
+    let html = `<strong>Meta-analytic summary</strong> `;
+    if (meta.B !== null) html += `<span class="meta-stat">B = ${meta.B} [${meta.ciLo}, ${meta.ciHi}]</span>`;
+    if (meta.p !== null) html += `<span class="meta-stat">p = ${meta.p}</span>`;
+    if (meta.Q) html += `<span class="meta-stat">${meta.Q}</span>`;
+    if (meta.I2) html += `<span class="meta-stat">I² = ${meta.I2}</span>`;
+    html += `<br><span style="color:var(--color-text-secondary)">${meta.note}</span>`;
+    mb.innerHTML = html;
+  } else {
+    mb.className = 'meta-box';
+  }
+
+  // Legend
+  const leg = document.getElementById('legend');
+  leg.innerHTML = '';
+  if (hasTypes) {
+    leg.innerHTML = `
+      <div class="leg-item"><div class="leg-dot" style="background:#FF4F4F"></div> Direct (barrier)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#00C1D4"></div> Interaction (bridging)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:none;border:1.5px solid #888;width:10px;height:10px;border-radius:50%"></div> p ≥ .05</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#888;width:10px;height:10px;border-radius:50%"></div> p &lt; .05</div>
+    `;
+  } else {
+    const dvColors = [...new Set(rows.map(r => r.dv))];
+    dvColors.forEach(dv => {
+      leg.innerHTML += `<div class="leg-item"><div class="leg-dot" style="background:${DVS[dv].color}"></div>${DVS[dv].label}</div>`;
+    });
+    leg.innerHTML += `
+      <div class="leg-item" style="margin-left:auto"><div class="leg-dot" style="background:none;border:1.5px solid #888;width:10px;height:10px;border-radius:50%"></div> p ≥ .05</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#888;width:10px;height:10px;border-radius:50%"></div> p &lt; .05</div>
+    `;
+  }
+}
+
+// Event listeners
+document.querySelectorAll('#dv-pills .pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('#dv-pills .pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    state.dv = p.dataset.dv;
+    render();
+  });
+});
+
+document.querySelectorAll('#iv-pills .pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('#iv-pills .pill').forEach(x => { x.classList.remove('active','odce'); });
+    p.classList.add('active','odce');
+    state.iv = p.dataset.iv;
+    render();
+  });
+});
+
+document.getElementById('tog-ci').addEventListener('change', e => { state.showCI = e.target.checked; render(); });
+document.getElementById('tog-meta').addEventListener('change', e => { state.showMeta = e.target.checked; render(); });
+document.getElementById('tog-int').addEventListener('change', e => { state.intOnly = e.target.checked; render(); });
+
+render();
+</script>
